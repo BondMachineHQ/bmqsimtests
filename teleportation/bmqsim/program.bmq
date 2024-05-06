@@ -1,0 +1,13 @@
+%block code1 .sequential
+        qbits   s,a,b
+        zero    s,a,b
+	h       a
+	cx      a,b
+	cx      s,a
+	h       s
+	cx      a,b
+	cz      s,b
+
+%endblock
+
+%meta bmdef global main:code1
