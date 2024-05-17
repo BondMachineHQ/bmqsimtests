@@ -1,0 +1,12 @@
+%block code1 .sequential
+        qbits   q0,q1
+        zero    q0,q1
+	rx      q0, 1.2
+        ry      q0, 2.3
+        rz      q0, 3.4
+        rx      q1, 4.5
+        ry      q1, 5.6
+        rz      q1, 6.7
+%endblock
+
+%meta bmdef global main:code1
