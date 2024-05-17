@@ -52,7 +52,8 @@ def guessrotations(target):
 	# print (qbits)
 	initial_guess = [1.0,] * 3*qbits
 	
-	result = minimize(rotfitness, initial_guess, args=tuple(target),method='L-BFGS-B')
+	result = minimize(rotfitness, initial_guess, args=tuple(target),method='L-BFGS-B', options={'ftol': 1e-5, 'disp': False})
+	print (result)
 	return result.x
 
 rot = False
