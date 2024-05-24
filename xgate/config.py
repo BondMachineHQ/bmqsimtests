@@ -3,5 +3,6 @@ numiter = 1
 staticdata = False
 passthreshold = 0.5
 quiet = False
-fundamental = False
+fundamental = True
+useprob = True
 
