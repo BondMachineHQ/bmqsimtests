@@ -4,3 +4,5 @@ output.json
 outputs.json
 inputs.txt
 outputs.txt
+probs.json
+vars.py
