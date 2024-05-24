@@ -4,3 +4,4 @@ staticdata = False
 passthreshold = 0.000001
 quiet = True
 fundamental = False
+useprob = False
