@@ -6,3 +6,5 @@ inputs.txt
 outputs.txt
 probs.json
 vars.py
+active
+deactive
