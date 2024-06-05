@@ -1,6 +1,7 @@
 qbits=3
-numiter = 1
-staticdata = True
+numiter = 100
+staticdata = False
 passthreshold = 0.000001
 quiet = False
 fundamental = False
+useprob = False
