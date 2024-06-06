@@ -2,7 +2,7 @@
         qbits   s,a,b
         zero    s,a,b
 	h       a
-	cx      b,a
+	cx      a,b
 	cx      s,a
 	h       s
 	cx      a,b

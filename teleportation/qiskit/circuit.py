@@ -10,7 +10,7 @@ from qiskit.quantum_info import Statevector
 qc = QuantumCircuit(3)
  
 qc.h(1)
-qc.cx(2,1)
+qc.cx(1,2)
 qc.cx(0,1)
 qc.h(0)
 qc.cx(1,2)
