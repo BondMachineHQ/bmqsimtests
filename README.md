@@ -46,7 +46,7 @@ Depending on the values of certain **parameters**, the code in the `analyze.ipyn
      - The initial state is always the fundamental. An `inputs.txt/inputs.json` file is created with the data     forming a fundamental vector (e.g., for 2 qubits, the state is |1000>).
 
 - 2) `fundamental` = False and `staticdata` = True:
-     - The circuit starts from a state formed by the values given in the `inputs.txt/inputs.json` files.
+     - The circuit starts from a generic state formed by the values given in the `inputs.txt/inputs.json` files.
      - This state is a linear combination of the base of qubits (e.g., `A|01> + B|10>`, with A and B complex numbers).
 
 - 3) `fundamental` = False and `staticdata` = False:
