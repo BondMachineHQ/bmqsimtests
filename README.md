@@ -24,7 +24,7 @@ To fully understand the predictive operation of the bmqsim package and other ava
 
 Within each subrepository, such as `Xgate/quest`, there is a text file called `active` (e.g., `xgate/quest/active`). This file is essential for the specific simulator, in this case `quest`, to be taken into account when comparing the vatious simulators.
 
-If the `active` file is not in a subrepository, the related quantum simulator will not be used and therefore will not generate any results.(For more details, refer to the analyze.ipynb file in the root repository.)
+If the `active` file is not in a subrepository, the related quantum simulator will not be used and therefore will not generate any results.(For more details, refer to the `analyze.ipynb` file in the root repository.)
 
 In the case of the `qiskit` subrepository (`xgate/qiskit`) both the `active` file and the `base` file are present. As mentioned, the idea is to make comparisons between various simulation technologies, using qiskit as a reference.
 
