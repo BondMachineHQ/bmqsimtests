@@ -45,6 +45,14 @@ Depending on the values of certain **parameters**, the code in the `analyze.ipyn
      - in this case, the `numiter` and `staticdata` parameters are ignored.
      - The initial state is always the fundamental. An `inputs.txt/inputs.json` file is created with the data     forming a fundamental vector (e.g., for 2 qubits, the state is |1000>).
 
+- 2) `fundamental` = False and `staticdata` = True:
+     - The circuit starts from a state formed by the values given in the `inputs.txt/inputs.json` files.
+     - This state is a linear combination of the base of qubits (e.g., `A|01> + B|10>`, with A and B complex numbers).
+
+- 3) `fundamental` = False and `staticdata` = False:
+     - The parameter numiter is used.
+     - In this case, as many "static" states are generated as are indicated by the `numiter parameter` (for example, if `numiter=100`, 100 possible vectors will be created and the predetermined circuit will be executed for each).
+
 
 
 ## Supported simulators
