@@ -40,6 +40,13 @@ Regardless of the mode of operation, there are four parameters that are always u
 - **quiet**: sets the verbosity of the process.
 - **useprob**: if set to True, the probability coefficients (amplitudes) of the states produced by the various quantum simulators are calculated.
 
+Depending on the values of certain **parameters**, the code in the `analyze.ipynb` file behaves differently. There are three modes of operation:
+- 1) `fundamental` = False:
+     - in this case, the `numiter` and `staticdata` parameters are ignored.
+     - The initial state is always the fundamental. An `inputs.txt/inputs.json` file is created with the data     forming a fundamental vector (e.g., for 2 qubits, the state is |1000>).
+
+
+
 ## Supported simulators
 
 - ### qiskit
