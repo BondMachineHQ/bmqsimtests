@@ -51,7 +51,7 @@ Depending on the values of certain **parameters**, the code in the `analyze.ipyn
 
 - 3) `fundamental` = False and `staticdata` = False:
      - The parameter numiter is used.
-     - In this case, as many "static" states are generated as are indicated by the `numiter parameter` (for example, if `numiter=100`, 100 possible vectors will be created and the predetermined circuit will be executed for each).
+     - In this case, as many generic states are generated as are indicated by the `numiter parameter` (for example, if `numiter=100`, 100 possible vectors will be created and the predetermined circuit will be executed for each).
 
 
 
