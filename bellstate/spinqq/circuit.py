@@ -13,7 +13,7 @@ circ = Circuit()
 
 q = circ.allocateQubits(2)
 circ << (X, q[0])
-circ << (CX, q[0], q[1])
+circ << (CX, (q[0], q[1]))
 
 exe = comp.compile(circ, 0)
 config = NMRConfig()

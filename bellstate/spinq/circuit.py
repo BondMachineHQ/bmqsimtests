@@ -9,7 +9,7 @@ circ = Circuit()
 q = circ.allocateQubits(2)
 
 circ << (X, q[0])
-circ << (CX, q[0], q[1])
+circ << (CX, (q[0], q[1]))
 
 comp = get_compiler("native")
 engine = get_basic_simulator()
