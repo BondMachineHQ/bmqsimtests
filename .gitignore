@@ -2,9 +2,12 @@ input.json
 inputs.json
 output.json
 outputs.json
+rots.json
 inputs.txt
 outputs.txt
 probs.json
 vars.py
 active
 deactive
+rotations
+base

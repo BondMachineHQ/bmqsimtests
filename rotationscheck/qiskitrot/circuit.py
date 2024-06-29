@@ -1,19 +1,15 @@
-#!/usr/bin/env python
-
-import os
+#!/usr/bin/env python3
 import json
+import os
 import math
 
 from scipy.optimize import minimize
-from qiskit.quantum_info import Statevector
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import SparsePauliOp,Operator
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit_ibm_runtime import QiskitRuntimeService, EstimatorV2 as Estimator
 from qiskit.quantum_info import Statevector
 
-from spinqit import get_basic_simulator, get_compiler, Circuit, BasicSimulatorConfig
-from spinqit import H, CX, Rx, X, Ry, Rz, CZ
-from math import pi
 
 with open('inputs.json') as json_file:
     	inputs = json.load(json_file)
@@ -27,46 +23,52 @@ if os.path.exists("rotations"):
 		rots = json.load(json_file)
 
 def get_qc(qbits, rot, rotTarget):
-	circ = Circuit()
-	q = circ.allocateQubits(qbits)
+	qc = QuantumCircuit(qbits)
 
 	if rot:
 		rotations = rots[rotTarget]
 		# print (rotations)
 		for i in range(qbits):
 			if rotations[3*i] != 0.0:
-				circ << (Rx, q[i], rotations[3*i])
+				qc.rx(rotations[3*i], i)
 			if rotations[3*i+1] != 0.0:
-				circ << (Ry, q[i], rotations[3*i+1])
+				qc.ry(rotations[3*i+1], i)
 			if rotations[3*i+2] != 0.0:
-				circ << (Rz, q[i], rotations[3*i+2])
+				qc.rz(rotations[3*i+2], i)
 
-	circ << (X, q[0])
-	return circ
+	qc=qc.reverse_bits()
+	return qc
+
+# print (qc.draw())
+
+# Load the date from the inputs file
 
 outputs = []
 
 for currI in range(len(inputs)):
 	input = inputs[currI]
+	complexArray = []
+	if rot:
+		complexArray.append(complex(1,0))
+		for i in range(len(input)-1):
+			complexArray.append(complex(0,0))
+	else:
+		for num in input:
+			complexArray.append(complex(num[0],num[1]))
 
-	circ=get_qc(qbits, rot, currI)
-
-	comp = get_compiler("native")
-	engine = get_basic_simulator()
-	optimization_level = 0
-	exe = comp.compile(circ, optimization_level)
-
-	config = BasicSimulatorConfig()
-	result = engine.execute(exe, config)
-
-	values=result.states
-
+	sv=Statevector(complexArray)
+	print(sv)
+	# print (sv)
+	# print (targetrot)
+	qc = get_qc(qbits, rot,currI)
+	print (qc.draw())
+	sv=sv.evolve(qc)
+	outlistcomplex=sv.data.tolist()
 	outlist=[]
-	for coef in values:
-		outlist.append([coef.real,coef.imag])
+	for i in range(len(outlistcomplex)):
+		outlist.append([outlistcomplex[i].real,outlistcomplex[i].imag])
 	outputs.append(outlist)
 
 # Write the output to the outputs file as json
 with open('outputs.json', 'w') as outfile:
-	json.dump(outputs, outfile)
-
+    json.dump(outputs, outfile)

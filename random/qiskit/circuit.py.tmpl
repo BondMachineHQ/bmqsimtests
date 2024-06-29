@@ -21,6 +21,7 @@ with open('inputs.json') as json_file:
     	inputs = json.load(json_file)
 
 outputs = []
+probs = []
 
 for input in inputs:
 	complexArray = []
@@ -31,10 +32,16 @@ for input in inputs:
 	sv=sv.evolve(qc)
 	outlistcomplex=sv.data.tolist()
 	outlist=[]
+	problist=[]
 	for i in range(len(outlistcomplex)):
 		outlist.append([outlistcomplex[i].real,outlistcomplex[i].imag])
+		problist.append(outlistcomplex[i].real**2+outlistcomplex[i].imag**2)
 	outputs.append(outlist)
+	probs.append(problist)
 
 # Write the output to the outputs file as json
 with open('outputs.json', 'w') as outfile:
     json.dump(outputs, outfile)
+
+with open('probs.json', 'w') as outfile:
+    json.dump(probs, outfile)

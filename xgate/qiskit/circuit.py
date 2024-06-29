@@ -10,65 +10,31 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime import QiskitRuntimeService, EstimatorV2 as Estimator
 from qiskit.quantum_info import Statevector
 
-def rotfitness(parameters, *args):
-	qbits=int(len(parameters)/3)
 
-	qc = QuantumCircuit(qbits)
-	for i in range(qbits):
-		qc.rx(float(parameters[3*i]), i)
-		qc.ry(float(parameters[3*i+1]), i)
-		qc.rz(float(parameters[3*i+2]), i)
-	
-	# print (qc.draw())
-	qc=qc.reverse_bits()
+with open('inputs.json') as json_file:
+    	inputs = json.load(json_file)
 
-	complexArray = []
-	complexArray.append(complex(1,0))
-	for i in range(2**qbits-1):
-		complexArray.append(complex(0,0))
-
-	sv = Statevector(complexArray)
-	sv = sv.evolve(qc)
-
-	outlistcomplex = sv.data.tolist()
-	# print(outlistcomplex)
-	# print (args)
-
-	sigma = 0.0
-	for i in range(len(outlistcomplex)):
-		sigma  += abs(args[2*i] - outlistcomplex[i].real)
-		sigma  += abs(args[2*i+1] - outlistcomplex[i].imag)
-
-	sigma = sigma/len(outlistcomplex)
-	# print (outlistcomplex)
-	# print (args)
-	# print (sigma)
-	return sigma
-
-def guessrotations(target):
-	# target is a statevector
-	length = len(target)
-	qbits = int(math.log2(length/2))
-	# print (qbits)
-	initial_guess = [1.0,] * 3*qbits
-	
-	result = minimize(rotfitness, initial_guess, args=tuple(target),method='L-BFGS-B')
-	return result.x
+qbits = int(math.log2(len(inputs[0])))
 
 rot = False
 if os.path.exists("rotations"):
 	rot = True
+	with open('rots.json') as json_file:
+		rots = json.load(json_file)
 
-def get_qc(rot, rottarget):
-	qc = QuantumCircuit(2)
+def get_qc(qbits, rot, rotTarget):
+	qc = QuantumCircuit(qbits)
 
 	if rot:
-		rotations = guessrotations(rottarget)
+		rotations = rots[rotTarget]
 		# print (rotations)
-		for i in range(2):
-			qc.rx(rotations[3*i], i)
-			qc.ry(rotations[3*i+1], i)
-			qc.rz(rotations[3*i+2], i)
+		for i in range(qbits):
+			if rotations[3*i] != 0.0:
+				qc.rx(rotations[3*i], i)
+			if rotations[3*i+1] != 0.0:
+				qc.ry(rotations[3*i+1], i)
+			if rotations[3*i+2] != 0.0:
+				qc.rz(rotations[3*i+2], i)
 
 	qc.x(0)
 
@@ -79,21 +45,15 @@ def get_qc(rot, rottarget):
 
 # Load the date from the inputs file
 
-with open('inputs.json') as json_file:
-    	inputs = json.load(json_file)
-
 outputs = []
 
-for input in inputs:
+for currI in range(len(inputs)):
+	input = inputs[currI]
 	complexArray = []
-	targetrot = []
 	if rot:
 		complexArray.append(complex(1,0))
 		for i in range(len(input)-1):
 			complexArray.append(complex(0,0))
-		for num in input:
-			targetrot.append(num[0])
-			targetrot.append(num[1])
 	else:
 		for num in input:
 			complexArray.append(complex(num[0],num[1]))
@@ -101,7 +61,7 @@ for input in inputs:
 	sv=Statevector(complexArray)
 	# print (sv)
 	# print (targetrot)
-	qc = get_qc(rot,targetrot)
+	qc = get_qc(qbits, rot,currI)
 	print (qc.draw())
 	sv=sv.evolve(qc)
 	outlistcomplex=sv.data.tolist()
