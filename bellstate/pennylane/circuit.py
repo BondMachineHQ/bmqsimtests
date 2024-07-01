@@ -11,7 +11,7 @@ dev = qml.device("default.qubit", wires=qList)
 @qml.qnode(dev)
 def circuit(state):
     qml.QubitStateVector(state, wires=qList)
-    qml.PauliX(wires="q0")
+    qml.Hadamard(wires="q0")
     qml.CNOT(wires=["q0","q1"])
     return qml.state()
 

@@ -70,7 +70,7 @@ def get_qc(rot, rottarget):
 			qc.ry(rotations[3*i+1], i)
 			qc.rz(rotations[3*i+2], i)
 
-	qc.x(0)
+	qc.h(0)
 	qc.cx(0, 1)
 
 	qc=qc.reverse_bits()

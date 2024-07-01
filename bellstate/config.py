@@ -1,8 +1,8 @@
 qbits=2
-numiter = 100
+numiter = 10
 staticdata = False
-passthreshold = 0.5
+passthreshold = 0.2
 quiet = False
-fundamental = True
+fundamental = False
 useprob = True
 

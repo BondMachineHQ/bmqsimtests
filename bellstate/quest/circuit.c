@@ -44,7 +44,7 @@ int main(int narg, char *varg[])
 		if (finished == 1)
 			break;
 
-		pauliX(qubits, 1);
+		hadamard(qubits, 1);
 		controlledNot(qubits, 1, 0);
 		
 
