@@ -11,90 +11,49 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.quantum_info import Statevector
 
 from spinqit import get_basic_simulator, get_compiler, Circuit, BasicSimulatorConfig
-from spinqit import H, CX, Rx, X, Ry, Rz
+from spinqit import H, CX, Rx, X, Ry, Rz, CZ, Y, Z
+from math import pi
 
 from spinqit import get_nmr, get_compiler, Circuit, NMRConfig
+
+with open('inputs.json') as json_file:
+        inputs = json.load(json_file)
+
+qbits = int(math.log2(len(inputs[0])))
 
 if os.path.exists("vars.py"):
     from vars import user, password, qhost
 
-def rotfitness(parameters, *args):
-	qbits=int(len(parameters)/3)
+rot = False
+if os.path.exists("rotations"):
+	rot = True
+	with open('rots.json') as json_file:
+		rots = json.load(json_file)
 
-	qc = QuantumCircuit(qbits)
-	for i in range(qbits):
-		qc.rx(float(parameters[3*i]), i)
-		qc.ry(float(parameters[3*i+1]), i)
-		qc.rz(float(parameters[3*i+2]), i)
-	
-	# print (qc.draw())
-	qc=qc.reverse_bits()
-
-	complexArray = []
-	complexArray.append(complex(1,0))
-	for i in range(2**qbits-1):
-		complexArray.append(complex(0,0))
-
-	sv = Statevector(complexArray)
-	sv = sv.evolve(qc)
-
-	outlistcomplex = sv.data.tolist()
-	# print(outlistcomplex)
-	# print (args)
-
-	sigma = 0.0
-	for i in range(len(outlistcomplex)):
-		sigma  += abs(args[2*i] - outlistcomplex[i].real)
-		sigma  += abs(args[2*i+1] - outlistcomplex[i].imag)
-
-	sigma = sigma/len(outlistcomplex)
-	# print (outlistcomplex)
-	# print (args)
-	# print (sigma)
-	return sigma
-
-def guessrotations(target):
-	# target is a statevector
-	length = len(target)
-	qbits = int(math.log2(length/2))
-	# print (qbits)
-	initial_guess = [1.0,] * 3*qbits
-	
-	result = minimize(rotfitness, initial_guess, args=tuple(target),method='L-BFGS-B')
-	return result.x
-
-def get_qc(rot, rottarget):
+def get_qc(qbits, rot, rotTarget):
 	circ = Circuit()
 	q = circ.allocateQubits(%%QBITS%%)
 
 	if rot:
-		rotations = guessrotations(rottarget)
+		rotations = rots[rotTarget]
 		# print (rotations)
-		for i in range(%%QBITS%%):
-			circ << (Rx, q[i], rotations[3*i])
-			circ << (Ry, q[i], rotations[3*i+1])
-			circ << (Rz, q[i], rotations[3*i+2])
+		for i in range(qbits):
+			if rotations[3*i] != 0.0:
+				circ << (Rx, q[i], rotations[3*i])
+			if rotations[3*i+1] != 0.0:
+				circ << (Ry, q[i], rotations[3*i+1])
+			if rotations[3*i+2] != 0.0:
+				circ << (Rz, q[i], rotations[3*i+2])
 
 %%CIRCUIT%%
 	return circ
 
-rot = False
-if os.path.exists("rotations"):
-	rot = True
-
-with open('inputs.json') as json_file:
-    	inputs = json.load(json_file)
-
 outputs = []
 
-for input in inputs:
-    targetrot = []
-    if rot:
-        for num in input:
-            targetrot.append(num[0])
-            targetrot.append(num[1])
+for currI in range(len(inputs)):
+    input = inputs[currI]
 
-    circ=get_qc(rot, targetrot)
+    circ=get_qc(qbits, rot, currI)
 
     engine = get_nmr()
     comp = get_compiler("native")
